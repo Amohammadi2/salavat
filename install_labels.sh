@@ -1,0 +1,1 @@
+neomodel_install_labels $1 --db bolt://neo4j:neoadmin@localhost:7687

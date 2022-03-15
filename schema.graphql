@@ -1,0 +1,7 @@
+type Mutation {
+  sendSalavat(number: Int!, name: String!): Boolean!
+}
+
+type Query {
+  ok: Boolean!
+}

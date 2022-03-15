@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send Salavat</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/0.6.1/progressbar.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+  <div class="flex flex-col h-screen items-center justify-center">
+    <div>
+      <button class="bg-blue-400 px-2 py-2 rounded-lg text-white" id="APISendBtn">ارسال</button>
+      <input class="border-solid border-2 px-1 py-2 rounded-lg" style="direction: rtl;" name="name" id="cname" placeholder="نام شرکت کننده ..." />
+    </div>
+    <div class="w-96 h-96 flex items-center justify-center relative mt-5">
+      <div class="z-0 w-full h-full top-0 left-0 absolute" id="container"></div>
+      <button class="w-80 h-80 text-4xl rounded-full bg-slate-600 text-white z-10" id="sendBtn">
+        ثبت
+      </button>
+    </div>
+    <div id="currentNumberContainer" class="mt-10">
+      تعداد صلوات های فرستاده شده: 
+    </div>
+  </div>
+
+  <script defer>
+
+    function sendSalavat() {
+      const contributorName = document.querySelector('#cname').value
+      const currentNumber = +localStorage.getItem('salavat') || 0
+      if (currentNumber == 0) return
+      fetch(`/send_salavat/${contributorName || 'ناشناس'}/${currentNumber}`, {
+        method: 'POST'
+      }).catch(console.log)
+      localStorage.setItem('salavat', 0)
+      showNumberOfSalavat()
+    }
+
+    function showNumberOfSalavat() {
+      const currentNumber = +localStorage.getItem('salavat') || 0 
+      document
+        .querySelector('#currentNumberContainer')
+        .innerText = `تعداد صلوات های فرستاده شده: ${currentNumber}`
+    }
+
+    function incrementSalavat() {
+      const contributorName = document.querySelector('#cname').value
+      const currentNumber = +localStorage.getItem('salavat') || 0
+      const newNumber = currentNumber + 1
+      localStorage.setItem('salavat', newNumber)
+      showNumberOfSalavat()
+    }
+
+    const bar = new ProgressBar.Circle('#container', {easing: 'easeInOut'});
+    bar.animate(1);  // Value from 0.0 to 1.
+
+    const sendBtn = document.querySelector('#sendBtn')
+    sendBtn.addEventListener('click', (e) => {
+      if (bar.value() != 1) return
+      bar.set(0)
+      bar.animate(1)
+      incrementSalavat()
+    })
+
+    const APISendBtn = document.querySelector("#APISendBtn")
+    APISendBtn.addEventListener('click', () => {
+      sendSalavat()
+    })
+
+    showNumberOfSalavat()
+  </script>
+</body>
+</html>
