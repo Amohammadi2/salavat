@@ -1,9 +1,20 @@
-version: '3'
+version: '3.4'
 
 services:
+  salavat:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    depends_on:
+      - neo4j
+    restart: on-failure
+    ports:
+      - "8000:8000"
+
   neo4j:
     image: neo4j:latest
     container_name: salavat-neo4j
+    restart: on-failure
     environment:
       - NEO4J_AUTH=${NEO4J_USER}/${NEO4J_PASS}
     ports:
